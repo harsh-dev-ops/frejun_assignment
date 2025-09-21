@@ -3,9 +3,9 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from app.database.postgres.models import *
-from app.database.postgres.models.base import Base
-from app.database.postgres.sessions import DB_URI
+from app.database.models import *
+from app.database.models.base import Base
+from app.database.sessions import DB_URI
 
 # Set up the Alembic Config object
 config = context.config

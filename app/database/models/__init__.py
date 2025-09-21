@@ -1,1 +1,1 @@
-from .tickets import *
+from .tickets import TrainModel, TicketModel, BerthModel, PassengerModel
