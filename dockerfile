@@ -34,6 +34,6 @@ COPY --chown=apiuser:apigroup . .
 COPY --from=build --chown=apiuser:apigroup /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-HEALTHCHECK --interval=5s --timeout=5s --retries=5 CMD curl --include --request GET http://localhost:80/api/healthz || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD curl --include --request GET http://localhost:80/api/healthz || exit 1
 
 CMD [ "uvicorn", "app.main:app", "--port", "80", "--host", "0.0.0.0", "--workers", "4"]
