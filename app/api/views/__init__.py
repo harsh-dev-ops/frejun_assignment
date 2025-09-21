@@ -14,6 +14,6 @@ api_router.include_router(
 
 api_router.include_router(
     router=health_check_router,
-    prefix='/healthz',
+    prefix='',
     tags=['Healthcheck']
 )

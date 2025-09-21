@@ -27,7 +27,7 @@ EXPOSE 80
 
 USER apiuser
 
-WORKDIR /home/apiuser/accounts_app
+WORKDIR /home/apiuser/fastapi_app
 
 COPY --chown=apiuser:apigroup . .
 
@@ -36,4 +36,4 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 HEALTHCHECK --interval=5s --timeout=5s --retries=5 CMD curl --include --request GET http://localhost:80/api/healthz || exit 1
 
-CMD [ "uvicorn", "app.main:app", "--port", "80", "--host", "0.0.0.0", "--wrokers", "4"]
+CMD [ "uvicorn", "app.main:app", "--port", "80", "--host", "0.0.0.0", "--workers", "4"]

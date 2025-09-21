@@ -3,6 +3,7 @@ from pydantic import Field, PostgresDsn
 from pydantic_settings import BaseSettings
 from dotenv import load_dotenv
 import os
+from sqlalchemy import URL
 
 load_dotenv()
 
@@ -58,14 +59,14 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in origins.split(",")]
     
     @property
-    def SQLALCHEMY_DATABASE_URL(self) -> PostgresDsn:
-        return PostgresDsn.build(
-            scheme="postgresql+psycopg2",
+    def SQLALCHEMY_DATABASE_URL(self) -> URL:
+        return URL.create(
+            drivername="postgresql+psycopg2",
             username=self.POSTGRES_USER,
             password=self.POSTGRES_PASSWORD,
             host=self.POSTGRES_HOST,
             port=self.POSTGRES_PORT,
-            path=self.POSTGRES_DB or "",
+            database=self.POSTGRES_DB,
         )
 
 

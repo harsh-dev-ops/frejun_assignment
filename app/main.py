@@ -5,7 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 
 from app.api.views import api_router
-from app.api.auth import token
 from app.conf.settings import settings
 
 
@@ -20,7 +19,7 @@ app.mount('/static', StaticFiles(directory='app/static'), name='static')
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.ALLOWED_ORIGIN,
+    allow_origins=settings.ALLOWED_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
