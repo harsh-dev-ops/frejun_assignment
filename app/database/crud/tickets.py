@@ -130,6 +130,7 @@ class TrainCrud(BaseCrud, _TrainCrud):
             if berth_count > train.total_confirmed_berths:
                 break
         
+        berth_data['coach'] = 'RAC'
         for i in range(1, train.total_rac_berths + 1):
             middle_lower_berth_data = {**berth_data,
                                     'berth_number': f"RAC{i}",
@@ -156,7 +157,7 @@ class BerthCrud(BaseCrud, _BerthCrud):
     def get_berth(self, berth_id: int) -> BerthModel | None:
         return super().get(berth_id)
     
-    def get_available_berths(self, train_id: int, berth_type: BerthTypeEnum | None = None):
+    def get_available_berths(self, train_id: int, berth_type: BerthTypeEnum | None = None, limit: int = 0):
         stmt = sa.select(
             BerthModel
         ).where(
@@ -166,6 +167,9 @@ class BerthCrud(BaseCrud, _BerthCrud):
         
         if berth_type:
             stmt.where(BerthModel.type == berth_type)
+        
+        if limit:
+            stmt.limit(limit)
         
         berths = self.session.execute(stmt).scalars().all()
         return berths
@@ -208,8 +212,8 @@ class TicketCrud(BaseCrud, _TicketCrud):
         
         stmt = self.pagination_query(stmt, page, page_size)
         tickets = self.session.execute(stmt).scalars().all()
-        
-        return tickets
+         
+        return {'tickets': tickets, 'count': len(tickets)}
 
     def get_ticket_count_by_status(self, train_id: int):
         stmt = sa.select(
@@ -232,6 +236,7 @@ class TicketCrud(BaseCrud, _TicketCrud):
             TicketModel.created_at
         )
         tickets = self.session.execute(stmt).scalars().all()
+        print(tickets)
         return tickets
         
     def update_ticket_status(self, ticket_id: int, status: TicketStatusEnum):

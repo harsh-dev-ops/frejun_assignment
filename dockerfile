@@ -36,4 +36,4 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD curl --include --request GET http://localhost:80/api/healthz || exit 1
 
-CMD [ "uvicorn", "app.main:app", "--port", "80", "--host", "0.0.0.0", "--workers", "4"]
+CMD [ "uvicorn", "app.main:app", "--port", "80", "--host", "0.0.0.0", "--workers", "4", "--reload"]

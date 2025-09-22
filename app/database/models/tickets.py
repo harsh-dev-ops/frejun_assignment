@@ -88,6 +88,16 @@ class PassengerModel(Base):
     berth_id: Mapped[int | None] = mapped_column(sa.ForeignKey("berths.id", ondelete='CASCADE'), nullable=True)
     needs_berth: Mapped[bool] = mapped_column(default=True)
     
+    berth: Mapped["BerthModel"] = relationship(
+        "BerthModel",
+        backref=backref('passenger_berth')
+    )
+    
+    # train: Mapped["TrainModel"] = relationship(
+    #     "TrainModel",
+    #     backref=backref('passenger_train')
+    # )
+    
     __table_args__ = (
         sa.CheckConstraint('(age >= 5 AND needs_berth = TRUE) OR (age < 5 AND needs_berth = FALSE)', 
                        name='age_berth_constraint'),

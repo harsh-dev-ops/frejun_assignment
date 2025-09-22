@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+import copy
 from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -82,7 +83,7 @@ class TicketService(_TicketService):
             for passenger in payload.passengers:
                 berth = None
                 if passenger.age >= 5 and status in [TicketStatusEnum.CONFIRMED, TicketStatusEnum.RAC]:
-                    berth = await self.manager.assign_berth(payload.train_id, passenger, status)
+                    berth = await self.manager.available_berth(payload.train_id, passenger, status)
                     if berth:
                         self.berth_crud.update_berth_availability(berth.id, False)
                 
@@ -98,6 +99,7 @@ class TicketService(_TicketService):
     async def cancel_ticket(self, ticket_id: int):
         try:
             ticket = self.ticket_crud.get_ticket(ticket_id)
+            ticket_ref = copy.deepcopy(ticket)
             
             if ticket.status == TicketStatusEnum.CANCELLED:
                 return  None
@@ -108,10 +110,10 @@ class TicketService(_TicketService):
             
             self.ticket_crud.update_ticket_status(ticket_id, TicketStatusEnum.CANCELLED)
             
-            if ticket.status == TicketStatusEnum.CONFIRMED:
+            if ticket_ref.status == TicketStatusEnum.CONFIRMED:
                 await self.manager.promote_rac_to_confirmed(ticket.train_id)
                 await self.manager.promote_waiting_to_rac(ticket.train_id)
-            elif ticket.status == TicketStatusEnum.RAC:
+            elif ticket_ref.status == TicketStatusEnum.RAC:
                 await self.manager.promote_waiting_to_rac(ticket.train_id)
                 
         except SQLAlchemyError as e:

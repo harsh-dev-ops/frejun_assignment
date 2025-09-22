@@ -5,7 +5,7 @@ from typing import Any, Dict
 class NoTicketsAvailable(HTTPException):
     def __init__(
         self, 
-        status_code: int = status.HTTP_204_NO_CONTENT, 
+        status_code: int = status.HTTP_200_OK, 
         detail: Any = "No Tickets available", 
         headers: Dict[str, str] | None = None
         ) -> None:

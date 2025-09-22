@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
+from app.api.views.trains.schemas import TrainOut
 from app.database.models.tickets import GenderEnum, BerthTypeEnum, TicketStatusEnum
 
 
@@ -14,15 +15,7 @@ class CreatePassenger(PassengerBase):
     pass
 
 
-class PassengerOut(PassengerBase):
-    id: int
-    needs_berth: bool
-    berth_number: Optional[str] = None
-    berth_type: Optional[BerthTypeEnum] = None
-    coach: Optional[str] = None
 
-    class Config:
-        orm_mode = True
 
 
 class BerthBase(BaseModel):
@@ -49,6 +42,15 @@ class CreateTicket(TicketBase):
     train_id: int
 
 
+class PassengerOut(PassengerBase):
+    id: int
+    needs_berth: bool
+    berth: BerthOut | None = None
+
+    class Config:
+        orm_mode = True
+        
+
 class TicketOut(TicketBase):
     id: int
     created_at: datetime
@@ -70,7 +72,7 @@ class CancelOut(BaseModel):
 
 class BookedTicketsOut(BaseModel):
     tickets: List[TicketOut]
-    count: int
+    count: int = 0
 
 
 class AvailableTicketsOut(BaseModel):
