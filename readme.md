@@ -6,23 +6,25 @@
     git clone https://github.com/harsh-dev-ops/frejun_assignment.git
     cd frejun_assignment
     ```
-2. Build image
+2. Rename the env.txt to .env file and fill the missing variables values
+
+3. Build image
     ```sh
     docker compose build
     ```
-3. Run Containers
+4. Run Containers
     ```sh
     docker compose up -d
     ```
-4. Logs
+5. Logs
     ```sh
     docker compose logs -f
     ```
-5. Database migration
+6. Database migration
     ```sh
     docker compose exec app alembic upgrade head
     ```
-6. Create Train Data
+7. Create Train Data
     ```sh
         curl --location 'http://localhost:8000/api/v1/trains/' \
         --header 'Content-Type: application/json' \
