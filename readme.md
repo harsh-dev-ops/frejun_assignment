@@ -1,23 +1,28 @@
 # FreJun Assignment
 
 ## Project Setup
-1. Build image
+1. Clone the repo
+    ```sh
+    git clone https://github.com/harsh-dev-ops/frejun_assignment.git
+    cd frejun_assignment
+    ```
+2. Build image
     ```sh
     docker compose build
     ```
-2. Run Containers
+3. Run Containers
     ```sh
     docker compose up -d
     ```
-3. Logs
+4. Logs
     ```sh
     docker compose logs -f
     ```
-4. Database migration
+5. Database migration
     ```sh
     docker compose exec app alembic upgrade head
     ```
-5. Create Train Data
+6. Create Train Data
     ```sh
         curl --location 'http://localhost:8000/api/v1/trains/' \
         --header 'Content-Type: application/json' \
