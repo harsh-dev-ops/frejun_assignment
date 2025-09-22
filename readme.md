@@ -7,6 +7,21 @@
     cd frejun_assignment
     ```
 2. Rename the env.txt to .env file and fill the missing variables values
+    ```.env
+    SECRET_KEY=your-secret-key
+
+    POSTGRES_HOST=postgres
+    POSTGRES_DB=postgres
+    POSTGRES_USER=postgres
+    POSTGRES_PASSWORD=pg_password
+    POSTGRES_PORT=5432
+
+    ENV=dev
+    DEBUG=False
+
+    CLIENT_ORIGIN=http://localhost:3000
+    ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+    ```
 
 3. Build image
     ```sh
