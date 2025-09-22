@@ -1,4 +1,5 @@
 from enum import Enum
+import string
 from typing import List
 import sqlalchemy as sa
 from sqlalchemy.orm import Session
@@ -10,6 +11,18 @@ from abc import ABC, abstractmethod
 class _TrainCrud(ABC):
     @abstractmethod
     def get_train(self, train_id: int) -> TrainModel | None:
+        pass
+    
+    @abstractmethod
+    def get_trains(self, page: int, page_size: int):
+        pass
+    
+    @abstractmethod
+    def create_train(self, data: dict):
+        pass
+    
+    @abstractmethod
+    def delete_train(self, train_id: int):
         pass
     
 
@@ -70,6 +83,70 @@ class TrainCrud(BaseCrud, _TrainCrud):
         train = self.session.execute(stmt).scalar_one_or_none()
         self.missing_obj(train, detail = f"Train with ID: {train_id} not found!")
         return train
+    
+    def get_trains(self, page: int, page_size: int):
+        stmt = sa.select(TrainModel)
+        stmt = self.pagination_query(stmt, page, page_size)
+        trains = self.session.execute(stmt).scalars().all()
+        print(trains)
+        return trains
+    
+    def create_train(self, data: dict):
+        train: TrainModel = super().create(data)
+        
+        coaches = list(string.ascii_uppercase)[:train.total_coaches]
+        berth_count = 1
+        
+        berths = []
+        berth_data = {
+                    'train_id': train.id,
+                    'is_available': True
+                }
+        for coach in coaches:
+            berth_data['coach'] = coach
+            
+            for i in range(1, train.total_rac_berths + 1):  
+                
+                lower_berth_data = {**berth_data,
+                                    'berth_number': f"{coach}L{i}",
+                                    'type': BerthTypeEnum.LOWER
+                                    }
+                
+                middle_berth_data = {**berth_data,
+                                    'berth_number': f"{coach}M{i}",
+                                    'type': BerthTypeEnum.MIDDLE
+                                    }
+                
+                upper_berth_data = {**berth_data,
+                                    'berth_number': f"{coach}U{i}",
+                                    'type': BerthTypeEnum.UPPER
+                                    }
+                
+                berths.extend([lower_berth_data, middle_berth_data, upper_berth_data])
+                
+                berth_count += 3
+                if berth_count > train.total_confirmed_berths:
+                    break
+            if berth_count > train.total_confirmed_berths:
+                break
+        
+        for i in range(1, train.total_rac_berths + 1):
+            middle_lower_berth_data = {**berth_data,
+                                    'berth_number': f"RAC{i}",
+                                    'type': BerthTypeEnum.SIDE_LOWER
+                                    }
+            berths.append(middle_lower_berth_data)
+        
+        self.session.execute(
+            sa.insert(BerthModel),
+            berths,
+        )
+        self.session.commit()
+        # self.session.refresh(train)
+        return train
+        
+    def delete_train(self, train_id: int):
+        return super().delete(train_id)
         
 
 class BerthCrud(BaseCrud, _BerthCrud):
