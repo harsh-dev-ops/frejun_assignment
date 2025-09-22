@@ -10,47 +10,38 @@ load_dotenv()
 class Settings(BaseSettings):
     SECRET_KEY: str = Field(
         default=os.getenv("SECRET_KEY", "fallback-secret-key"),
-        description="Secret key for encryption"
     )
     
     ENV: str = Field(
         default=os.getenv("ENV", "development"),
-        description="Environment name"
     )
     
     DEBUG: bool = Field(
         default=os.getenv("DEBUG", "False").lower() == "true",
-        description="Debug mode"
     )
     
     POSTGRES_DB: str = Field(
         default=os.getenv("POSTGRES_DB", "railway_db"),
-        description="PostgreSQL database name"
     )
     
     POSTGRES_USER: str = Field(
         default=os.getenv("POSTGRES_USER", "user"),
-        description="PostgreSQL username"
     )
     
     POSTGRES_PASSWORD: str = Field(
         default=os.getenv("POSTGRES_PASSWORD", "password"),
-        description="PostgreSQL password"
     )
     
     POSTGRES_HOST: str = Field(
         default=os.getenv("POSTGRES_HOST", "localhost"),
-        description="PostgreSQL host"
     )
     
     POSTGRES_PORT: int = Field(
         default=int(os.getenv("POSTGRES_PORT", "5432")),
-        description="PostgreSQL port"
     )
     
     CLIENT_ORIGIN: str = Field(
         default=os.getenv("CLIENT_ORIGIN", "http://localhost:3000"),
-        description="Client origin URL"
     )
     
     @property
